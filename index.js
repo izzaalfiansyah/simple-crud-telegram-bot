@@ -29,6 +29,20 @@ bot.onText(/\/help/, async (msg, match) => {
   );
 });
 
+bot.onText(/\/list_schedule/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  const res = await http.get("/jadwal");
+
+  let message = "Jadwal tersimpan:\n";
+  res.data.forEach((item, index) => {
+    const no = index + 1;
+    message += `${no}. Pukul ${item.waktu}\n`;
+  });
+
+  bot.sendMessage(chatId, message);
+});
+
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
   // 'match' is the result of executing the regexp above on the text content
