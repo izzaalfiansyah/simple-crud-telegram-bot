@@ -43,6 +43,31 @@ bot.onText(/\/list_schedule/, async (msg) => {
   bot.sendMessage(chatId, message);
 });
 
+bot.onText(/\/new_schedule (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const val = match[1];
+
+  if (val) {
+    try {
+      await http.post("/jadwal", {
+        waktu: val,
+      });
+
+      bot.sendMessage(chatId, "jadwal baru berhasil disimpan");
+    } catch (e) {
+      bot.sendMessage(
+        chatId,
+        "gagal menyimpan jadwal. Error: " + e.response.toString()
+      );
+    }
+  } else {
+    bot.sendMessage(
+      chatId,
+      "OK. berikan format seperti berikut: /new_schedule 00:00"
+    );
+  }
+});
+
 bot.onText(/\/echo (.+)/, (msg, match) => {
   // 'msg' is the received Message from Telegram
   // 'match' is the result of executing the regexp above on the text content
