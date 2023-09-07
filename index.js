@@ -54,10 +54,7 @@ bot.onText(/\/new_jadwal (.+)/, async (msg, match) => {
 
       bot.sendMessage(chatId, "jadwal baru berhasil disimpan");
     } catch (e) {
-      bot.sendMessage(
-        chatId,
-        "gagal menyimpan jadwal. Error: " + e.response.toString()
-      );
+      bot.sendMessage(chatId, "gagal menyimpan jadwal. Error: " + e.toString());
     }
   } else {
     bot.sendMessage(
@@ -88,16 +85,26 @@ bot.onText(/\/del_jadwal (.+)/, async (msg, match) => {
         waktu: val,
       });
 
-      console.log(res.data[val]);
+      const item = res.data[val - 1];
 
-      bot.sendMessage(chatId, "jadwal berhasil dihapus");
+      await http.delete("/jadwal/" + item.id);
+
+      bot.sendMessage(chatId, `jadwal berhasil dihapus`);
     } catch (e) {
-      bot.sendMessage(
-        chatId,
-        "gagal menghapus jadwal. Error: " + e.response.toString()
-      );
+      bot.sendMessage(chatId, "gagal menghapus jadwal. Error: " + e.toString());
     }
   } else {
+    bot.sendMessage(
+      chatId,
+      "OK. berikan format seperti berikut: /del_jadwal nomor_jadwal. \nContoh: /del_jadwal 1"
+    );
+  }
+});
+
+bot.onText(/\/del_jadwal/, async (msg, match) => {
+  const chatId = msg.chat.id;
+
+  if (match.input == "/del_jadwal") {
     bot.sendMessage(
       chatId,
       "OK. berikan format seperti berikut: /del_jadwal nomor_jadwal. \nContoh: /del_jadwal 1"
