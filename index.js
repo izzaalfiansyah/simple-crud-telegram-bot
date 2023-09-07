@@ -16,20 +16,19 @@ const http = axios.default.create({
 bot.onText(/\/help/, async (msg, match) => {
   const chatId = msg.chat.id;
 
-  console.log(msg);
-
   bot.sendMessage(
     chatId,
     "\
   Aku bisa membantumu mengatur jadwal untuk pakan ikan. Kamu bisa mengontrolku menggunakan perintah berikut:\n \
   /help - lihat dokumentasi\n \
-  /list_schedule - melihat jadwal tersimpan\n \
-  /new_schedule - menambah list baru\n \
+  /get_jadwal - melihat jadwal tersimpan\n \
+  /new_jadwal - menambah list baru\n \
+  /del_jadwal - menghapus list\n \
   "
   );
 });
 
-bot.onText(/\/list_schedule/, async (msg) => {
+bot.onText(/\/get_jadwal/, async (msg) => {
   const chatId = msg.chat.id;
 
   const res = await http.get("/jadwal");
@@ -43,7 +42,7 @@ bot.onText(/\/list_schedule/, async (msg) => {
   bot.sendMessage(chatId, message);
 });
 
-bot.onText(/\/new_schedule (.+)/, async (msg, match) => {
+bot.onText(/\/new_jadwal (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   const val = match[1];
 
@@ -63,7 +62,45 @@ bot.onText(/\/new_schedule (.+)/, async (msg, match) => {
   } else {
     bot.sendMessage(
       chatId,
-      "OK. berikan format seperti berikut: /new_schedule 00:00"
+      "OK. berikan format seperti berikut: /new_jadwal waktu_jadwal. \nContoh: /new_jadwal 00:00"
+    );
+  }
+});
+
+bot.onText(/\/new_jadwal/, (msg, match) => {
+  const chatId = msg.chat.id;
+
+  if (match.input == "/new_jadwal") {
+    bot.sendMessage(
+      chatId,
+      "OK. berikan format seperti berikut: /new_jadwal waktu_jadwal. \nContoh: /new_jadwal 00:00"
+    );
+  }
+});
+
+bot.onText(/\/del_jadwal (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const val = match[1];
+
+  if (val) {
+    try {
+      const res = await http.get("/jadwal", {
+        waktu: val,
+      });
+
+      console.log(res.data[val]);
+
+      bot.sendMessage(chatId, "jadwal berhasil dihapus");
+    } catch (e) {
+      bot.sendMessage(
+        chatId,
+        "gagal menghapus jadwal. Error: " + e.response.toString()
+      );
+    }
+  } else {
+    bot.sendMessage(
+      chatId,
+      "OK. berikan format seperti berikut: /del_jadwal nomor_jadwal. \nContoh: /del_jadwal 1"
     );
   }
 });
