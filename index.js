@@ -45,6 +45,7 @@ Aku bisa membantumu mengatur jadwal untuk pakan ikan. Kamu bisa mengontrolku men
 /get_jadwal - melihat jadwal tersimpan\n \
 /new_jadwal - menambah list baru\n \
 /del_jadwal - menghapus jadwal\n \
+/get_history - melihat history pemberian pakan\n \
 /beri_pakan - memberikan pakan secara manual\n \
 ";
 
@@ -154,5 +155,29 @@ bot.onText(/\/beri_pakan/, async (msg, match) => {
     on: true,
   });
 
+  const date = new Date();
+  let waktu = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+  waktu += ":";
+  waktu += date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+
+  await http.post("/history", {
+    waktu,
+  });
+
   bot.sendMessage(chatId, "OK. Pakan diberikan");
+});
+
+bot.onText(/\/get_history/, async (msg, match) => {
+  const chatId = msg.chat.id;
+
+  const res = await http.get("/history?_limit-5&_sort=id&_order=desc");
+
+  let message = `menampilkan ${res.data.length} history pemberian makan terakhir:\n`;
+
+  res.data.forEach((item, index) => {
+    const no = index + 1;
+    message += `${no}. Pukul ${item.waktu}\n`;
+  });
+
+  bot.sendMessage(chatId, message);
 });
