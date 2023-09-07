@@ -170,7 +170,7 @@ bot.onText(/\/beri_pakan/, async (msg, match) => {
 bot.onText(/\/get_history/, async (msg, match) => {
   const chatId = msg.chat.id;
 
-  const res = await http.get("/history?_limit-5&_sort=id&_order=desc");
+  const res = await http.get("/history?_limit=5&_sort=id&_order=desc");
 
   let message = `menampilkan ${res.data.length} history pemberian makan terakhir:\n`;
 

@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dev": "node index.js",
-    "db:watch": "json-server db.json --routes db_routes.json"
+    "db:watch": "json-server --host 0.0.0.0 db.json --routes db_routes.json"
   },
   "dependencies": {
     "axios": "^1.5.0"
