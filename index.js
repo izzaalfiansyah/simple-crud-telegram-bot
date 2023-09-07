@@ -38,35 +38,26 @@ function checkIsTime(val) {
   return true;
 }
 
+const startText =
+  "\
+Aku bisa membantumu mengatur jadwal untuk pakan ikan. Kamu bisa mengontrolku menggunakan perintah berikut:\n \
+/help - lihat dokumentasi\n \
+/get_jadwal - melihat jadwal tersimpan\n \
+/new_jadwal - menambah list baru\n \
+/del_jadwal - menghapus list\n \
+";
+
 bot.onText(/\/start/, async (msg, match) => {
   const chatId = msg.chat.id;
 
-  bot.sendMessage(
-    chatId,
-    "\
-  Aku bisa membantumu mengatur jadwal untuk pakan ikan. Kamu bisa mengontrolku menggunakan perintah berikut:\n \
-  /help - lihat dokumentasi\n \
-  /get_jadwal - melihat jadwal tersimpan\n \
-  /new_jadwal - menambah list baru\n \
-  /del_jadwal - menghapus list\n \
-  "
-  );
+  bot.sendMessage(chatId, startText);
 });
 
 // Matches "/echo [whatever]"
 bot.onText(/\/help/, async (msg, match) => {
   const chatId = msg.chat.id;
 
-  bot.sendMessage(
-    chatId,
-    "\
-  Aku bisa membantumu mengatur jadwal untuk pakan ikan. Kamu bisa mengontrolku menggunakan perintah berikut:\n \
-  /help - lihat dokumentasi\n \
-  /get_jadwal - melihat jadwal tersimpan\n \
-  /new_jadwal - menambah list baru\n \
-  /del_jadwal - menghapus list\n \
-  "
-  );
+  bot.sendMessage(chatId, startText);
 });
 
 bot.onText(/\/get_jadwal/, async (msg) => {
