@@ -12,6 +12,32 @@ const http = axios.default.create({
   baseURL: api_url,
 });
 
+function checkIsTime(val) {
+  const times = val.split(":");
+
+  if (times.length != 2) {
+    throw new Error("waktu tidak valid");
+  }
+
+  if (
+    parseInt(times[0]) == NaN ||
+    parseInt(times[0]) < 0 ||
+    parseInt(times[0]) > 23
+  ) {
+    throw new Error("waktu tidak valid");
+  }
+
+  if (
+    parseInt(times[1]) == NaN ||
+    parseInt(times[1]) < 0 ||
+    parseInt(times[1]) > 59
+  ) {
+    throw new Error("waktu tidak valid");
+  }
+
+  return true;
+}
+
 bot.onText(/\/start/, async (msg, match) => {
   const chatId = msg.chat.id;
 
@@ -63,13 +89,15 @@ bot.onText(/\/new_jadwal (.+)/, async (msg, match) => {
 
   if (val) {
     try {
+      checkIsTime(val);
+
       await http.post("/jadwal", {
         waktu: val,
       });
 
       bot.sendMessage(chatId, "jadwal baru berhasil disimpan");
     } catch (e) {
-      bot.sendMessage(chatId, "gagal menyimpan jadwal. Error: " + e.toString());
+      bot.sendMessage(chatId, "gagal menyimpan jadwal. " + e.toString());
     }
   } else {
     bot.sendMessage(
@@ -106,7 +134,7 @@ bot.onText(/\/del_jadwal (.+)/, async (msg, match) => {
 
       bot.sendMessage(chatId, `jadwal berhasil dihapus`);
     } catch (e) {
-      bot.sendMessage(chatId, "gagal menghapus jadwal. Error: " + e.toString());
+      bot.sendMessage(chatId, "gagal menghapus jadwal. " + e.toString());
     }
   } else {
     bot.sendMessage(
@@ -125,16 +153,4 @@ bot.onText(/\/del_jadwal/, async (msg, match) => {
       "OK. berikan format seperti berikut: /del_jadwal nomor_jadwal. \nContoh: /del_jadwal 1"
     );
   }
-});
-
-bot.onText(/\/echo (.+)/, (msg, match) => {
-  // 'msg' is the received Message from Telegram
-  // 'match' is the result of executing the regexp above on the text content
-  // of the message
-
-  const chatId = msg.chat.id;
-  const resp = match[1]; // the captured "whatever"
-
-  // send back the matched "whatever" to the chat
-  bot.sendMessage(chatId, resp);
 });
