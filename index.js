@@ -44,7 +44,8 @@ Aku bisa membantumu mengatur jadwal untuk pakan ikan. Kamu bisa mengontrolku men
 /help - lihat dokumentasi\n \
 /get_jadwal - melihat jadwal tersimpan\n \
 /new_jadwal - menambah list baru\n \
-/del_jadwal - menghapus list\n \
+/del_jadwal - menghapus jadwal\n \
+/beri_pakan - memberikan pakan secara manual\n \
 ";
 
 bot.onText(/\/start/, async (msg, match) => {
@@ -144,4 +145,14 @@ bot.onText(/\/del_jadwal/, async (msg, match) => {
       "OK. berikan format seperti berikut: /del_jadwal nomor_jadwal. \nContoh: /del_jadwal 1"
     );
   }
+});
+
+bot.onText(/\/beri_pakan/, async (msg, match) => {
+  const chatId = msg.chat.id;
+
+  await http.put("/status/1", {
+    on: true,
+  });
+
+  bot.sendMessage(chatId, "OK. Pakan diberikan");
 });
